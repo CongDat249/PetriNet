@@ -49,6 +49,7 @@ void problem2() {
 
     int c = 0;
     while (true) {
+        if (c == 10) break;
         cout << n.toString() << endl;
         bool changed = n.changStage();
         if (!changed) {
@@ -81,6 +82,7 @@ void problem3() {
 
     int c = 0;
     while (true) {
+        if (c == 10) break;
         cout << n.toString() << endl;
         bool changed = n.changStage();
         if (!changed) {
@@ -95,7 +97,6 @@ void problem4() {
 
 int main() {
     //Greeting
-    problem1();
     while (true) {
         int choice;
         cout << "Enter your Problem choice: ";
@@ -118,6 +119,7 @@ int main() {
         }
         int res;
         cout << "Enter 1 to continue or 0 to exit: ";
+        cin>>res;
         if (!res) break;
     }
     return 0;
