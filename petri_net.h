@@ -14,6 +14,7 @@ private:
 
 public:
     Place(string, int);
+    void setToken(int);
     void addToken(int);
     void minusToken(int);
     int getToken();
@@ -40,6 +41,8 @@ public:
 
 class Net {
 private:
+    int nP;
+    int nT;
     vector<Place*> p;
     vector<Transition*> t;
 
@@ -49,11 +52,19 @@ private:
     void addArcIn(string, string);
 
 public:
-    Net() {}
+    Net() : nP(0), nT(0){}
+    string getPlaces();
+    string getTransitions();
+    int* setInitialM();
     void addPlace(string, int);
     void addTransition(string name);
     void addArc(string sou, string des);
     bool changStage();
+
+    void addPlaces(string*, int);
+    void addTransitions(string*, int);
+    void addArcs(string*, int);
+    void initial(int*, int);
     string toString();
 };
 
