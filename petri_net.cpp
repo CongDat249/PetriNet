@@ -100,14 +100,58 @@ void Net::addArc(string sou, string des) {
     }
 }
 
-bool Net::changStage() {
-    for (auto it = t.begin(); it != t.end(); ++it) {
-        if ((*it)->isEnabled()) {
-            (*it)->firing();
-            return true;
-        }
+int* Net::getMarking() {
+    int* M = new int[this->nP];
+    for (int i = 0; i < nP; i++) {
+        M[i] = this->p[i]->getToken();
     }
-    return false;
+
+    return M;
+}
+
+// duyet transition array
+// in ra cho nguoi dung chon, nhung transition co the enable
+bool Net::changeStage() {
+    // In ra nhung transition co the enable (neu k co thi thong bao ket thuc) (Thu)
+    while (true) {
+        int input;
+        int i = 0;
+        string enableT = "";
+        for (auto it = t.begin(); it != t.end(); ++it) {
+            if ((*it)->isEnabled()) {
+
+                enableT += (*it)->name + " at [" + to_string(i) + "]; " ;
+            }
+            i++;
+        }
+        enableT = enableT.substr(0, enableT.length() - 1);
+        cout << "ENABLE TRANSTIONS: " << enableT << endl;
+        cout << "There are some transitions that are enabled, please choose one of them: " ;
+
+        // Nhap input roi firing
+        bool isValid = false;
+        while (!isValid) {
+            cin >> input;
+            // Nhan input tu nguoi dung, check đúng thì firing, sai nhập lại (Hung)
+            if (input < t.size() && input >= 0) {
+                // auto it = t.at(input);
+                if (t[input]->isEnabled()) {
+                    t[input]->firing();
+                    cout << this->toString();
+                    isValid = true;
+                }
+            }
+            else {
+                cout << "Invalid input, try again" << endl;
+            }
+        }
+        int res;
+        cout << "Enter 1 to continue or 0 to exit entering transition: ";
+        cin>>res;
+        if (!res) break;
+    }
+
+    return true;
 }
 
 string Net::toString() {
@@ -171,6 +215,7 @@ string Net::getPlaces() {
     res = res.length() ? res.substr(0, res.length() - 2) : res;
     return res;
 }
+
 string Net::getTransitions() {
     string res = "Transitions: ";
     for (auto it = t.begin(); it != t.end(); ++it) {
@@ -185,7 +230,7 @@ int* Net::setInitialM() {
     for (int i = 0; i < nP; i++) {
         cout << "Enter number of tokens at place " << p[i]->name << ": ";
         int tokens = 0;
-        cin>> tokens;
+        cin >> tokens;
         p[i]->setToken(tokens);
     }
     return arr;

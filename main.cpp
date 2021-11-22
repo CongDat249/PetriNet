@@ -16,14 +16,11 @@ void problem1() {
     n.addArcs(arcs, nA);
     n.setInitialM();
 
-    int c = 0;
-    while (true) {
-        if (c == 3) break;
-        cout << n.toString() << endl;
-        bool changed = n.changStage();
-        c++;
-    }
-}
+    n.changeStage();
+
+     //  Nhap M0 (co ham setInitalM())
+    // changeStage
+ }
 
 void problem2() {
     Net n;
@@ -47,16 +44,7 @@ void problem2() {
     // change stage
     // Fix no dead lock
 
-    int c = 0;
-    while (true) {
-        if (c == 10) break;
-        cout << n.toString() << endl;
-        bool changed = n.changStage();
-        if (!changed) {
-            break;
-        }
-        c++;
-    }
+    n.changeStage();
 }
 
 void problem3() {
@@ -80,26 +68,59 @@ void problem3() {
     n.addArcs(arcs, nA);
     n.initial(M0, nP);
 
-    int c = 0;
-    while (true) {
-        if (c == 10) break;
-        cout << n.toString() << endl;
-        bool changed = n.changStage();
-        if (!changed) {
-            break;
-        }
-        c++;
+    n.changeStage();
+}
+
+long long count(int p1, int p2, int p3) {
+    if (p1 == 0 && p2 == 0 && p3 == 1) return 1;
+    else if (p1 < 0 || p2 < 0 || p3 < 0)
+        return 0;
+    else {
+        return 1 + count(p1 - 1, p2 + 1, p3) + count(p1, p2 - 1, p3 + 1);
     }
 }
 
+long long count(int p1, int p2, int p3, int p4, int p5, int p6, int patient, int doctor) {
+  
+    if (p1 == 0 && p2 == 0 && p3 == patient && p4 == doctor && p5 == 0 && p6 == 0) {
+        return 1;
+    }
+
+    else if (p1 < 0 || p2 < 0 || p3 < 0 || p4 < 0 || p5 < 0 || p6 < 0) {
+        return 0;
+    }
+
+    else {
+        return 1 + count(p1 - 1, p2 + 1, p3, p4 - 1, p5 + 1, p6, patient, doctor) + count(p1, p2, p3, p4, p5 - 1, p6 + 1, patient, doctor) + count(p1, p2 - 1, p3 + 1, p4 + 1, p5, p6 - 1, patient, doctor);
+    }
+}
 void problem4() {
+    int patient, doctor;
+    cout << "Input numbers of patient: ";
+    cin >> patient;
+    cout << "Input numbers of doctor: ";
+    cin >> doctor;
+    int p1, p2, p3, p4, p5, p6;
+    cout << "Input tokens in Wait: ";
+    cin >> p1;
+    cout << "Input tokens in Inside: ";
+    cin >> p2;
+    cout << "Input tokens in Done: ";
+    cin >> p3;
+    cout << "Input tokens in Free: ";
+    cin >> p4;
+    cout << "Input tokens in Busy: ";
+    cin >> p5;
+    cout << "Input tokens in Document: ";
+    cin >> p6;
+    cout << count(p1, p2, p3, p4, p5, p6, p1 + p2 + p3, p4 + p5 + p6);
 }
 
 int main() {
     //Greeting
     while (true) {
         int choice;
-        cout << "Enter your Problem choice: ";
+        cout << "Enter your Problem choice(1->4): ";
         cin >> choice;
         switch (choice) {
         case 1:

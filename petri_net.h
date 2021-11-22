@@ -55,11 +55,15 @@ public:
     Net() : nP(0), nT(0){}
     string getPlaces();
     string getTransitions();
+    int* getMarking();
+    int* firing(Transition*);
     int* setInitialM();
     void addPlace(string, int);
     void addTransition(string name);
     void addArc(string sou, string des);
-    bool changStage();
+    bool changStageUtil(int M[], vector<int*> res);
+    bool changeStage();
+    long long countMarking(); // Phong
 
     void addPlaces(string*, int);
     void addTransitions(string*, int);
