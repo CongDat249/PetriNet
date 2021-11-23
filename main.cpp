@@ -110,12 +110,12 @@ void problem4() {
     n.setInitialM(problem);
     int p1, p2, p3, p4, p5, p6;
     int  * M = n.getMarking();
-    // p1 = M[1];
-    // p2 = M[4];
-    // p3 = M[3];
-    // p4 = M[0];
-    // p5 = M[2];
-    // p6 = M[5];
+    p1 = M[1];
+    p2 = M[2]; //3
+    p3 = M[3]; 
+    p4 = M[0]; //
+    p5 = M[4];  //
+    p6 = M[5];
     // cout << "Input tokens in Wait: ";
     // cin >> p1;
     // cout << "Input tokens in Inside: ";
