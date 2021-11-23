@@ -26,6 +26,10 @@ void Place::setToken(int nT) {
     this->nTokens = nT;
 }
 
+void Place::print() {
+    cout << "(" << this->name.substr(1, name.length() - 1) << "(" << this->getToken() << "))";
+}
+
 //Transititon
 void Transition::addArcOut(Place* p) {
     out.push_back(p);
@@ -52,6 +56,10 @@ void Transition::firing() {
             (*it)->addToken(1);
         }
     }
+}
+
+void Transition::print() {
+    cout << "[" << this->name.substr(1, name.length() - 1) << "]";
 }
 
 // Net function
@@ -109,59 +117,156 @@ int* Net::getMarking() {
     return M;
 }
 
-// duyet transition array
-// in ra cho nguoi dung chon, nhung transition co the enable
-bool Net::changeStage() {
-    // In ra nhung transition co the enable (neu k co thi thong bao ket thuc) (Thu)
+void Net::changeStage(int problem) {
+    toString(problem);
     while (true) {
         int input;
         int i = 0;
-        string enableT = "";
-        for (auto it = t.begin(); it != t.end(); ++it) {
-            if ((*it)->isEnabled()) {
-
-                enableT += (*it)->name + " at [" + to_string(i) + "]; " ;
-            }
-            i++;
-        }
-        enableT = enableT.substr(0, enableT.length() - 1);
-        cout << "ENABLE TRANSTIONS: " << enableT << endl;
-        cout << "There are some transitions that are enabled, please choose one of them: " ;
-
-        // Nhap input roi firing
-        bool isValid = false;
-        while (!isValid) {
-            cin >> input;
-            // Nhan input tu nguoi dung, check đúng thì firing, sai nhập lại (Hung)
-            if (input < t.size() && input >= 0) {
-                // auto it = t.at(input);
-                if (t[input]->isEnabled()) {
-                    t[input]->firing();
-                    cout << this->toString();
-                    isValid = true;
-                }
-            }
-            else {
-                cout << "Invalid input, try again" << endl;
+        bool c = 0;
+        string eT = "";
+        for (i = 0; i < this->nT; i++) {
+            if (t[i]->isEnabled()) {
+                c = true;
+                eT += t[i]->name.substr(1, t[i]->name.length() - 1) + "[" + to_string(i) + "], ";
             }
         }
-        int res;
-        cout << "Enter 1 to continue or 0 to exit entering transition: ";
-        cin>>res;
-        if (!res) break;
+        if (!c) {
+            cout << "DEADLOCK" << endl;
+            break;
+        }
+        eT += "Exit[-1]";
+        cout << "Input option " << eT << ": ";
+
+        cin >> input;
+        if (input < t.size() && input >= 0 && t[input]->isEnabled()) {
+            t[input]->firing();
+            toString(problem);
+            continue;
+        }
+        else if (input == -1) {
+            break;
+        }
+        else {
+            cout << "Transition can not be enabled" << endl;
+            break;
+        }
     }
-
-    return true;
 }
 
-string Net::toString() {
-    string res = "[";
-    for (auto it = p.begin(); it != p.end(); ++it) {
-        res += (*it)->name.substr(1) + "(" + to_string((*it)->getToken()) + "), ";
+string Net::toString(int problem) {
+
+    switch (problem) {
+    case 1: {
+        //(Free(3))--->[End]--->(Doc(0))
+        //   |                     ^
+        //   v                     |
+        //[start]--->(busy(0))-->[Change]
+        cout << endl;
+        int i = 0;
+        cout << setw(6) << " ";
+        p[i++]->print();
+        cout << "<---";
+        this->getTrans("tEnd")->print();
+        cout << "<---";
+        p[i++]->print();
+        cout << endl;
+        //
+        cout << setw(8) << "|" << setw(27) << "^" << endl;
+        cout << setw(8) << "v" << setw(27) << "|" << endl;
+        cout << setw(7);
+        //
+        this->getTrans("tStart")->print();
+        cout << "--->";
+        p[i++]->print();
+        cout << "-->";
+        this->getTrans("tChange")->print();
+        cout << endl
+             << endl;
+        break;
     }
-    res = res.length() ? res.substr(0, res.length() - 2) : res;
-    res += "]";
-    return res;
+
+    case 2: {
+        cout << endl;
+        cout << setw(8) << " ";
+        vector<Place*>::iterator it = p.begin();
+        (*it++)->print();
+        cout << "-->";
+        this->getTrans("tStart")->print();
+        cout << "-->";
+        (*it++)->print();
+        cout << "-->";
+        this->getTrans("tChange")->print();
+        cout << "-->";
+        (*it++)->print();
+        cout << endl
+             << endl;
+
+        break;
+    }
+        //(wait(0))--->[start]--->(inside(0))--->[change]--->(done(0))
+    case 3: {
+        cout << endl;
+        cout << setw(33);
+        vector<Place*>::iterator it;
+        it = p.begin();
+        cout << "+----------";
+        (*it++)->print();
+        cout << "<----------+";
+        cout << endl;
+        //
+        cout << setw(23) << '|' << setw(31) << '|';
+        cout << endl;
+        cout << setw(23) << 'v' << setw(31) << '|';
+        cout << endl;
+        //
+        cout << setw(7);
+        (*it++)->print();
+        cout << "-->";
+        this->getTrans("tStart")->print();
+        cout << "------>";
+        (*it++)->print();
+        cout << "------>";
+        this->getTrans("tEnd")->print();
+        cout << "---->";
+        (*it++)->print();
+        cout << endl;
+        //
+        cout << setw(23) << '|' << setw(31) << '^';
+        cout << endl;
+        cout << setw(23) << 'v' << setw(31) << '|';
+        cout << endl;
+        //
+        cout << setw(22);
+        (*it++)->print();
+        cout << "--->";
+        this->getTrans("tChange")->print();
+        cout << "--->";
+        (*it++)->print();
+        cout << endl
+             << endl;
+
+        break;
+    }
+        //               +--------(Free(0))<-------+
+        //               |                         |
+        //               v                         |
+        //(wait(4))--->[start]---->(inside(3))---->[End]--->(done(4))
+        //                |                         ^
+        //                v                         |
+        //              (busy(1))--->[Change]--->(Doc(2))
+
+        // wait inside done, free, busy, doc
+    default:
+        break;
+    }
+    // string res = "[";
+    // for (auto it = p.begin(); it != p.end(); ++it) {
+    //     res += (*it)->name.substr(1) + "(" + to_string((*it)->getToken()) + "), ";
+    // }            //ten                           //number token
+    // res = res.length() ? res.substr(0, res.length() - 2) : res;
+    // res += "]";
+    // return res;
+    return " ";
 }
 
 // Nam
@@ -225,13 +330,15 @@ string Net::getTransitions() {
     return res;
 }
 
-int* Net::setInitialM() {
+int* Net::setInitialM(int problem) {
+    toString(problem);
     int* arr = new int[nP];
     for (int i = 0; i < nP; i++) {
-        cout << "Enter number of tokens at place " << p[i]->name << ": ";
+        cout << "Enter number of tokens at place " << p[i]->name.substr(1) << ": ";
         int tokens = 0;
         cin >> tokens;
         p[i]->setToken(tokens);
+        this->toString(problem);
     }
     return arr;
 }

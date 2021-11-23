@@ -4,9 +4,9 @@ using namespace std;
 
 void problem1() {
     Net n;
-    string places[] = {"pFree", "pBusy", "pDocu"};
+    string places[] = {"pFree", "pDocu", "pBusy"};
     string trans[] = {"tStart", "tChange", "tEnd"};
-    string arcs[] = {"pFree->tStart", "tStart->pBusy"};
+    string arcs[] = {"pFree->tStart", "tStart->pBusy", "pBusy->tChange", "tChange->pDocu", "pDocu->tEnd", "tEnd->pFree"};
     int nP = sizeof(places) / sizeof(places[0]);
     int nT = sizeof(trans) / sizeof(trans[0]);
     int nA = sizeof(arcs) / sizeof(arcs[0]);
@@ -14,13 +14,13 @@ void problem1() {
     n.addPlaces(places, nP);
     n.addTransitions(trans, nT);
     n.addArcs(arcs, nA);
-    n.setInitialM();
+    int problem = 1;
+    n.setInitialM(problem);
+    n.changeStage(problem);
 
-    n.changeStage();
-
-     //  Nhap M0 (co ham setInitalM())
+    //  Nhap M0 (co ham setInitalM())
     // changeStage
- }
+}
 
 void problem2() {
     Net n;
@@ -33,26 +33,27 @@ void problem2() {
     int nP = sizeof(places) / sizeof(places[0]);
     int nT = sizeof(trans) / sizeof(trans[0]);
     int nA = sizeof(arcs) / sizeof(arcs[0]);
-    int M0[3] = {5, 0, 1};
 
     n.addPlaces(places, nP);
     n.addTransitions(trans, nT);
     n.addArcs(arcs, nA);
-    n.initial(M0, 3);
 
     // Initial marking
     // change stage
     // Fix no dead lock
 
-    n.changeStage();
+    int problem = 2;
+    n.setInitialM(problem);
+    n.changeStage(problem);
 }
 
 void problem3() {
     Net n;
-    string places[] = {"pFree", "pBusy", "pDocu", "pInside", "pWait", "pDone"};
+    string places[] = {"pFree", "pWait", "pInside", "pDone", "pBusy", "pDocu"};
     string trans[] = {"tStart", "tChange", "tEnd"};
     string arcs[] = {
         "pFree->tStart",
+        "pWait->tStart",
         "tStart->pBusy",
         "pStart->pInside",
         "pInside->tEnd",
@@ -61,27 +62,18 @@ void problem3() {
     int nP = sizeof(places) / sizeof(places[0]);
     int nT = sizeof(trans) / sizeof(trans[0]);
     int nA = sizeof(arcs) / sizeof(arcs[0]);
-    int M0[nP] = {1, 0, 0, 0, 4, 1};
 
     n.addPlaces(places, nP);
     n.addTransitions(trans, nT);
     n.addArcs(arcs, nA);
-    n.initial(M0, nP);
 
-    n.changeStage();
-}
-
-long long count(int p1, int p2, int p3) {
-    if (p1 == 0 && p2 == 0 && p3 == 1) return 1;
-    else if (p1 < 0 || p2 < 0 || p3 < 0)
-        return 0;
-    else {
-        return 1 + count(p1 - 1, p2 + 1, p3) + count(p1, p2 - 1, p3 + 1);
-    }
+    int problem = 3;
+    n.setInitialM(problem);
+    n.changeStage(problem);
 }
 
 long long count(int p1, int p2, int p3, int p4, int p5, int p6, int patient, int doctor) {
-  
+
     if (p1 == 0 && p2 == 0 && p3 == patient && p4 == doctor && p5 == 0 && p6 == 0) {
         return 1;
     }
@@ -95,32 +87,55 @@ long long count(int p1, int p2, int p3, int p4, int p5, int p6, int patient, int
     }
 }
 void problem4() {
-    int patient, doctor;
-    cout << "Input numbers of patient: ";
-    cin >> patient;
-    cout << "Input numbers of doctor: ";
-    cin >> doctor;
+    Net n;
+    string places[] = {"pFree", "pWait", "pInside", "pDone", "pBusy", "pDocu"};
+    string trans[] = {"tStart", "tChange", "tEnd"};
+    string arcs[] = {
+        "pFree->tStart",
+        "pWait->tStart",
+        "tStart->pBusy",
+        "pStart->pInside",
+        "pInside->tEnd",
+        "tEnd->pDone",
+        "pBusy->tChange", "tChange->pDocu", "pDocu->tEnd", "tEnd->pFree", "pFree->tStart"};
+    int nP = sizeof(places) / sizeof(places[0]);
+    int nT = sizeof(trans) / sizeof(trans[0]);
+    int nA = sizeof(arcs) / sizeof(arcs[0]);
+
+    n.addPlaces(places, nP);
+    n.addTransitions(trans, nT);
+    n.addArcs(arcs, nA);
+
+    int problem = 3;
+    n.setInitialM(problem);
     int p1, p2, p3, p4, p5, p6;
-    cout << "Input tokens in Wait: ";
-    cin >> p1;
-    cout << "Input tokens in Inside: ";
-    cin >> p2;
-    cout << "Input tokens in Done: ";
-    cin >> p3;
-    cout << "Input tokens in Free: ";
-    cin >> p4;
-    cout << "Input tokens in Busy: ";
-    cin >> p5;
-    cout << "Input tokens in Document: ";
-    cin >> p6;
-    cout << count(p1, p2, p3, p4, p5, p6, p1 + p2 + p3, p4 + p5 + p6);
+    int  * M = n.getMarking();
+    // p1 = M[1];
+    // p2 = M[4];
+    // p3 = M[3];
+    // p4 = M[0];
+    // p5 = M[2];
+    // p6 = M[5];
+    // cout << "Input tokens in Wait: ";
+    // cin >> p1;
+    // cout << "Input tokens in Inside: ";
+    // cin >> p2;
+    // cout << "Input tokens in Done: ";
+    // cin >> p3;
+    // cout << "Input tokens in Free: ";
+    // cin >> p4;
+    // cout << "Input tokens in Busy: ";
+    // cin >> p5;
+    // cout << "Input tokens in Document: ";
+    // cin >> p6;
+    cout << "Resutls is: " << count(p1, p2, p3, p4, p5, p6, p1 + p2 + p3, p4 + p5 + p6) << endl;
 }
 
 int main() {
     //Greeting
     while (true) {
         int choice;
-        cout << "Enter your Problem choice(1->4): ";
+        cout << "Enter your Problem choice (1->4): ";
         cin >> choice;
         switch (choice) {
         case 1:
@@ -139,9 +154,10 @@ int main() {
             cout << "Your choice is invalid, please enter a number of your Problem choice!!" << endl;
         }
         int res;
-        cout << "Enter 1 to continue or 0 to exit: ";
-        cin>>res;
-        if (!res) break;
+        cout << "Other problem[1], Exit[0]: ";
+        cin >> res;
+        if (res == 1) continue;
+        break;
     }
     return 0;
 }

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iomanip>
 using namespace std;
 
 class Place {
@@ -18,6 +19,7 @@ public:
     void addToken(int);
     void minusToken(int);
     int getToken();
+    void print();
     ~Place(){};
 
     friend class Net;
@@ -35,6 +37,8 @@ public:
     void addArcIn(Place*);
     bool isEnabled();
     void firing();
+    void print();
+    void printTransition();
 
     friend class Net;
 };
@@ -57,19 +61,19 @@ public:
     string getTransitions();
     int* getMarking();
     int* firing(Transition*);
-    int* setInitialM();
+    int* setInitialM(int);
     void addPlace(string, int);
     void addTransition(string name);
     void addArc(string sou, string des);
     bool changStageUtil(int M[], vector<int*> res);
-    bool changeStage();
+    void changeStage(int);
     long long countMarking(); // Phong
 
     void addPlaces(string*, int);
     void addTransitions(string*, int);
     void addArcs(string*, int);
     void initial(int*, int);
-    string toString();
+    string toString(int problem);
 };
 
 #endif

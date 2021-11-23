@@ -32,10 +32,12 @@ Enter initial marking [wait, free, done]: 1 0 0 1
 
 Input enabled transition Start(1), End(2) Exit(-1):
 ////////////////////////////////////////////////
-    (wait(0))->[Start]->(2)
+   (wait(02))->[Start]->(20)
     |                    ^
     v                    |
     (3)---->[End]------>(0)
+
+toString(int problem, )
 
 Input enabled transition Start(1), End(2) Exit(-1):
     (wait(0))->[Start]->(2)
