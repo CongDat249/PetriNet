@@ -205,30 +205,14 @@ string Net::toString(int problem) {
     }
         //(wait(0))--->[start]--->(inside(0))--->[change]--->(done(0))
     case 3: {
-        cout << endl;
-        cout << setw(33);
         vector<Place*>::iterator it;
         it = p.begin();
-        cout << "+----------";
-        (*it++)->print();
-        cout << "<----------+";
-        cout << endl;
-        //
-        cout << setw(23) << '|' << setw(31) << '|';
-        cout << endl;
-        cout << setw(23) << 'v' << setw(31) << '|';
-        cout << endl;
-        //
-        cout << setw(7);
-        (*it++)->print();
-        cout << "-->";
-        this->getTrans("tStart")->print();
-        cout << "------>";
-        (*it++)->print();
-        cout << "------>";
+        cout << setw(22);
+        this->getPlace("pFree")->print();
+        cout << "<----";
         this->getTrans("tEnd")->print();
-        cout << "---->";
-        (*it++)->print();
+        cout << "<-----";
+        this->getPlace("pDocu")->print();
         cout << endl;
         //
         cout << setw(23) << '|' << setw(31) << '^';
@@ -236,14 +220,28 @@ string Net::toString(int problem) {
         cout << setw(23) << 'v' << setw(31) << '|';
         cout << endl;
         //
-        cout << setw(22);
-        (*it++)->print();
-        cout << "--->";
+        cout << setw(7);
+        this->getPlace("pWait")->print();
+        cout << "-->";
+        this->getTrans("tStart")->print();
+        cout << "------>";
+        this->getPlace("pInside")->print();
+        cout << "------>";
         this->getTrans("tChange")->print();
-        cout << "--->";
-        (*it++)->print();
-        cout << endl
-             << endl;
+        cout << "---->";
+        this->getPlace("pDone")->print();
+        cout << endl;
+        //
+        cout << setw(23) << '|' << setw(31) << '^';
+        cout << endl;
+        cout << setw(23) << '|' << setw(31) << '|';
+        cout << endl;
+        //
+        cout << setw(33);
+        cout << "+----------";
+        this->getPlace("pBusy")->print();
+        cout << "-----------+";
+        cout << endl<<endl;
 
         break;
     }

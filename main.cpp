@@ -55,10 +55,13 @@ void problem3() {
         "pFree->tStart",
         "pWait->tStart",
         "tStart->pBusy",
-        "pStart->pInside",
-        "pInside->tEnd",
-        "tEnd->pDone",
-        "pBusy->tChange", "tChange->pDocu", "pDocu->tEnd", "tEnd->pFree", "pFree->tStart"};
+        "tStart->pInside",
+        "pInside->tChange",
+        "pBusy->tChange",
+        "tEnd->pFree",
+        "tChange->pDocu",
+        "pDocu->tEnd",
+        "tChange->pDone"};
     int nP = sizeof(places) / sizeof(places[0]);
     int nT = sizeof(trans) / sizeof(trans[0]);
     int nA = sizeof(arcs) / sizeof(arcs[0]);
@@ -72,8 +75,22 @@ void problem3() {
     n.changeStage(problem);
 }
 
-long long count(int p1, int p2, int p3, int p4, int p5, int p6, int patient, int doctor) {
+long long count(int p1, int p2, int p3, int p4, int p5, int p6) {
+    /*
+    p1: wait 
+    p2: inside
+    p3: done
+    p4: free
+    p5: busy
+    p6: docu
 
+    t1: start
+    t2: change
+    t3: end
+    */
+
+    int patient = p1 + p2 + p3;
+    int doctor = p4 + p5 + p6;
     if (p1 == 0 && p2 == 0 && p3 == patient && p4 == doctor && p5 == 0 && p6 == 0) {
         return 1;
     }
@@ -83,7 +100,9 @@ long long count(int p1, int p2, int p3, int p4, int p5, int p6, int patient, int
     }
 
     else {
-        return 1 + count(p1 - 1, p2 + 1, p3, p4 - 1, p5 + 1, p6, patient, doctor) + count(p1, p2, p3, p4, p5 - 1, p6 + 1, patient, doctor) + count(p1, p2 - 1, p3 + 1, p4 + 1, p5, p6 - 1, patient, doctor);
+        return 1 + count(p1 - 1, p2 + 1, p3, p4 -1, p5 + 1, p6) 
+                 + count(p1, p2 -1, p3 + 1, p4, p5 - 1, p6 + 1) 
+                 + count(p1, p2, p3, p4 + 1, p5, p6 - 1);
     }
 }
 void problem4() {
@@ -94,10 +113,13 @@ void problem4() {
         "pFree->tStart",
         "pWait->tStart",
         "tStart->pBusy",
-        "pStart->pInside",
-        "pInside->tEnd",
-        "tEnd->pDone",
-        "pBusy->tChange", "tChange->pDocu", "pDocu->tEnd", "tEnd->pFree", "pFree->tStart"};
+        "tStart->pInside",
+        "pInside->tChange",
+        "pBusy->tChange",
+        "tEnd->pFree",
+        "tChange->pDocu",
+        "pDocu->tEnd",
+        "tChange->pDone"};
     int nP = sizeof(places) / sizeof(places[0]);
     int nT = sizeof(trans) / sizeof(trans[0]);
     int nA = sizeof(arcs) / sizeof(arcs[0]);
@@ -109,26 +131,15 @@ void problem4() {
     int problem = 3;
     n.setInitialM(problem);
     int p1, p2, p3, p4, p5, p6;
-    int  * M = n.getMarking();
+    int* M = n.getMarking();
     p1 = M[1];
     p2 = M[2]; //3
-    p3 = M[3]; 
+    p3 = M[3];
     p4 = M[0]; //
-    p5 = M[4];  //
+    p5 = M[4]; //
     p6 = M[5];
-    // cout << "Input tokens in Wait: ";
-    // cin >> p1;
-    // cout << "Input tokens in Inside: ";
-    // cin >> p2;
-    // cout << "Input tokens in Done: ";
-    // cin >> p3;
-    // cout << "Input tokens in Free: ";
-    // cin >> p4;
-    // cout << "Input tokens in Busy: ";
-    // cin >> p5;
-    // cout << "Input tokens in Document: ";
-    // cin >> p6;
-    cout << "Resutls is: " << count(p1, p2, p3, p4, p5, p6, p1 + p2 + p3, p4 + p5 + p6) << endl;
+
+    cout << "Resutls is: " << count(p1, p2, p3, p4, p5, p6) << endl;
 }
 
 int main() {
